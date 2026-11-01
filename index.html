@@ -15,7 +15,7 @@
     border-radius:16px;padding:9px;
     box-shadow:inset 0 0 0 2px rgba(255,255,255,.45),inset 0 0 0 6px #7a5417,
       inset 0 0 0 8px rgba(255,255,255,.18),0 24px 60px rgba(0,0,0,.55);}
-  .inner{background:#e7dcbb;border-radius:9px;padding:9px;display:flex;flex-direction:column;gap:9px;
+  .inner{background:#d0c6a8;border-radius:9px;padding:9px;display:flex;flex-direction:column;gap:9px;
     box-shadow:inset 0 0 0 2px #b89a52;}
 
   .titlebar{flex:none;height:38px;display:flex;align-items:center;justify-content:space-between;gap:8px;
@@ -137,7 +137,7 @@
 
   // palette
   var SKY="#bfe6ff", CLOUD="#ffffff", GRASS="#a8d84a", GRASS_D="#6fa02a",
-      CAVE="#171320", CAVE2="#23202f", LADDER="#9c6a2e", LADDER_D="#6e4a1e",
+      CAVE="#1b1510", CAVE2="#2a2016", LADDER="#9c6a2e", LADDER_D="#6e4a1e",
       FLAG="#35c666", SLIME="#4fd6b5", SLIME_D="#2fae91", SLIME_L="#bff3e6", CHEEK="#ff9fb0", EYE="#20323a";
 
   // ---- geometry: surface + a staircase mine going down, then a climb shaft back up ----
@@ -193,7 +193,7 @@
 
   // ---- state ----
   var hero={x:P[0][0],y:P[0][1],dist:0,hop:0};
-  var camX=0, camY=0, cur=0, mode="walk", target=0, hp=0, hpTarget=2, items=[], sparks=[], shake=0;
+  var camX=0, camY=0, cur=0, mode="walk", target=0, hp=0, hpTarget=0, items=[], sparks=[], shake=0;
   var fphase=0, ft=0, bombVisible=false, bombExploded=false;
   var staCap=0, staCapYear=2020;   // stamina refills to staCap when you gain a status, then -1 per year
   var flying=false, crying=false, paused=false;  // flying: after wings; crying: bombed; paused: stop while walking
@@ -281,7 +281,7 @@
   window.addEventListener("keydown",function(e){ if(e.code==="Space"){ e.preventDefault(); tap(); }
     else if(e.key==="r"||e.key==="R"){ location.reload(); }});
 
-  function burst(x,y,kind){ var cols=kind==="bad"?["#ff7a1a","#e23b45","#ffcf2e","#9e2730"]:["#ffcf2e","#fff","#35c666","#5b6ee1"];
+  function burst(x,y,kind){ var cols=kind==="bad"?["#ff7a1a","#e23b45","#ffcf2e","#9e2730"]:["#ffcf2e","#fff","#35c666","#ff9a33"];
     for(var i=0;i<18;i++){ var a=(i/18)*Math.PI*2, sp=22+(i%5)*11;
       sparks.push({x:x,y:y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-20,life:.6+(i%4)*.12,c:cols[i%cols.length]}); } }
   function win(){ if(mode==="win")return; mode="win"; tapEl.style.display="none";
@@ -361,7 +361,7 @@
     var sx=Math.round(x0-camX), sy=Math.round(y0-camY), w=Math.round(x1-x0), h=Math.round(y1-y0);
     if(sx>LW||sx+w<0||sy>LH||sy+h<0) return;
     g.fillStyle=CAVE; g.fillRect(sx,sy,w,h);
-    g.fillStyle="#0c0912"; g.fillRect(sx,sy,w,2);           // soft top-edge shadow
+    g.fillStyle="#0f0a05"; g.fillRect(sx,sy,w,2);           // soft top-edge shadow
   }
   function carveSeg(s){
     if(s.vert) carveRect(s.x0-HH, Math.min(s.y0,s.y1)-HH, s.x0+HH, Math.max(s.y0,s.y1)+HH);
