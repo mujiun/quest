@@ -69,16 +69,18 @@
   .lootitem .cap{font-size:10.5px;font-weight:800;letter-spacing:.2px;color:#9a8347;}
   .lootitem.on .cap{color:#5a2e0c;}
 
-  .statbar{flex:none;height:34px;display:flex;align-items:center;gap:9px;
-    background:linear-gradient(#f1e6c6,#d7c396);border:2px solid #7a5417;border-radius:7px;padding:0 12px;
+  .stats{flex:none;display:flex;gap:8px;}
+  .statcard{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:6px;
+    background:linear-gradient(#f1e6c6,#d7c396);border:2px solid #7a5417;border-radius:7px;padding:8px 12px;min-height:50px;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.6);}
-  .slabel{font-weight:800;font-size:11px;letter-spacing:1px;color:#5a2e0c;text-transform:uppercase;white-space:nowrap;min-width:56px;}
-  .maplerow{flex:1;min-width:0;display:flex;justify-content:space-between;align-items:center;overflow:hidden;}
-  .maple{width:18px;height:18px;image-rendering:pixelated;display:block;flex:none;}
-  .track{flex:1;height:13px;background:#8a7636;border:2px solid #5a4410;border-radius:3px;overflow:hidden;
+  .scap{font-weight:800;font-size:11px;letter-spacing:1px;color:#5a2e0c;text-transform:uppercase;white-space:nowrap;}
+  .srow{display:flex;justify-content:space-between;align-items:baseline;}
+  .hpval{font-size:12px;font-weight:800;color:#2a2212;letter-spacing:.3px;}
+  .dayval{font-size:11.5px;font-weight:800;color:#5a2e0c;letter-spacing:.2px;line-height:1.1;}
+  .dayval b{font-size:20px;color:#2a2212;font-variant-numeric:tabular-nums;}
+  .track{height:13px;background:#8a7636;border:2px solid #5a4410;border-radius:3px;overflow:hidden;
     box-shadow:inset 0 2px 3px rgba(0,0,0,.4);}
   .track>i{display:block;height:100%;width:20%;background:#35c666;transition:background .3s;}
-  .hyrs{font-size:11px;font-weight:800;color:#2a2212;min-width:56px;text-align:right;letter-spacing:.3px;white-space:nowrap;}
 
   #win{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:11px;
     background:rgba(8,8,20,.9);color:#fff;text-align:center;z-index:5;border-radius:16px;padding:24px;}
@@ -110,15 +112,15 @@
       <div class="loot">
         <div class="lootrow" id="lootrow"></div>
       </div>
-      <div class="statbar">
-        <span class="slabel">Time</span>
-        <span class="maplerow" id="maplerow"></span>
-        <span class="hyrs" id="yrtext">0 yrs</span>
-      </div>
-      <div class="statbar">
-        <span class="slabel">HP</span>
-        <div class="track"><i id="hp"></i></div>
-        <span class="hyrs" id="yrs">10 / 10</span>
+      <div class="stats">
+        <div class="statcard">
+          <div class="scap">Time elapsed</div>
+          <div class="dayval" id="dayval">0 <small>mo</small></div>
+        </div>
+        <div class="statcard">
+          <div class="srow"><span class="scap">HP</span><span class="hpval" id="yrs">0 / 10</span></div>
+          <div class="track"><i id="hp"></i></div>
+        </div>
       </div>
     </div>
     <div id="win">
@@ -143,27 +145,33 @@
   // ---- geometry: surface + a staircase mine going down, then a climb shaft back up ----
   var GY=48, GROW=GY/T;                 // grass surface line / row
   // path waypoints (world px) — character's base/feet follow these
-  var P=[[32,GY],[208,GY],[368,GY],[496,GY],[496,130],
-         [656,130],[656,220],[816,220],[816,310],[1008,310],
-         [1008,400],[1184,400],[1184,490],[1360,490],[1360,580],
-         [1536,580],[1536,104],[1536,GY],[1584,GY]];   // ...climb up the shaft, then step RIGHT onto solid ground (hole stays in view)
+  // segment lengths are proportional to real elapsed days → the time counter advances at a CONSTANT speed (勻速)
+  var P=[[60,GY],[180,GY],[234,GY],          // spawn · OPT · JOB (surface)
+         [234,161],[533,161],                // dive + run to the H-1B fork (1st try)
+         [861,161],                          // dig RIGHT to the 2nd-try win
+         [861,289],[1199,289],               // down+right to PERM
+         [1199,410],[1517,410],              // down+right to I-140
+         [1517,425],[1556,425],              // short step to the wait
+         [1556,433],[1577,433],              // short step to I-485 (bottom)
+         [1577,104],                         // long climb UP (12-month I-485 pending)
+         [1577,GY],[1625,GY]];               // emerge, then step RIGHT onto solid ground (hole stays in view)
   // which waypoint each story beat sits on
   var START_YEAR=2020;
   var BEATS=[
     {node:1,  year:2020, cap:0, tool:"key", tag:"OPT", msg:"You get your <b>OPT</b> — a key to work. But you must land a <b>job within 90 days</b>, or you fall out of status."},
     {node:2,  year:2021, cap:3, tool:"door", tag:"Hired!", msg:"You land a job in time — a door opens! Your employer takes you on and agrees to sponsor you. Time to head underground."},
-    {node:6,  year:2022, dip:1, type:"fork", tool:"coin", tag:"H-1B lottery",
+    {node:4,  year:2022, dip:1, type:"fork", tool:"coin", tag:"H-1B lottery",
       msg:"<b>H-1B lottery</b> — the shaft forks, and only ~27% get picked. You take your chances…",
       bomb:"<b>2021 — not selected!</b> That tunnel caves in. Your clock keeps ticking — wait a year and try again.",
-      winmsg:"<b>2022 — H-1B!</b> Picked on your 2nd try — a gold coin, and <b>6 HP</b> (6 years) to work toward the green card. But every year that passes burns one."},
-    {node:9,  year:2023, tool:"gemB", tag:"PERM", msg:"<b>PERM</b> — a blue gem! You pass your <b>PERM</b> labor certification — the first green-card step. That sets your <b>priority date</b>, your spot in the green-card line."},
-    {node:11, year:2024, tool:"gemG", tag:"I-140", msg:"<b>I-140</b> — a green gem! Your employer's green-card petition for you is approved."},
-    {node:13, year:2025, type:"wait", tag:"The long wait", msg:"The big wait: your <b>priority date</b> must become <b>current</b> (Chart A) before you can file. The years — and your HP — tick down…"},
-    {node:15, year:2026, tool:"wings", tag:"I-485 / EAD", msg:"Current! You file <b>I-485</b> and get your <b>EAD + Advance Parole</b> — <b>wings!</b> Advance Parole lets you travel freely. Fly up for your green card!"},
-    {node:16, year:2026, cap:10, tool:"greencard", tag:"Approved!", msg:"<b>I-485 APPROVED</b> — you fly up and grab your <b>Green Card</b> at the surface! HP maxed to 10 — you can stay for good."},
-    {node:18, year:2026, type:"flag", tag:"Victory", msg:"You climb into daylight a <b>lawful permanent resident</b>."}
+      winmsg:"<b>2022 — H-1B!</b> Picked on your 2nd try — a gold coin, and your <b>HP jumps to 6</b>. But every year that passes burns one."},
+    {node:7,  year:2023, tool:"gemB", tag:"PERM", msg:"<b>PERM</b> — a blue gem! You pass your <b>PERM</b> labor certification — the first green-card step. That sets your <b>priority date</b>, your spot in the green-card line."},
+    {node:9,  year:2024, tool:"gemG", tag:"I-140", msg:"<b>I-140</b> — a green gem! Your employer's green-card petition for you is approved."},
+    {node:11, year:2025, type:"wait", tag:"The long wait", msg:"The big wait: your <b>priority date</b> must become <b>current</b> (Chart A) before you can file. The years — and your HP — tick down…"},
+    {node:13, year:2026, tool:"wings", tag:"I-485 / EAD", msg:"Current! You file <b>I-485</b> and get your <b>EAD + Advance Parole</b> — <b>wings!</b> Advance Parole lets you travel freely. Fly up for your green card!"},
+    {node:14, year:2026, cap:10, tool:"greencard", tag:"Approved!", msg:"<b>I-485 APPROVED</b> — you fly up and grab your <b>Green Card</b> at the surface! HP maxed to 10 — you can stay for good."},
+    {node:16, year:2026, type:"flag", tag:"Victory", msg:"You climb into daylight a <b>lawful permanent resident</b>."}
   ];
-  var FORK_INDEX=2, FORK_NODE=6;
+  var FORK_INDEX=2, FORK_NODE=4;
 
   // build segments + cumulative distances
   var SEG=[], ND=[0];
@@ -199,7 +207,7 @@
   var flying=false, crying=false, paused=false;  // flying: after wings; crying: bombed; paused: stop while walking
   var FC=P[FORK_NODE];             // fork junction (arrived going DOWN)
   var STUB=[FC[0], FC[1]+120];     // DOWN dead-end = the failed 2021 shaft (longer; bomb at the bottom)
-  var PICKPOS=[FC[0]+96, FC[1]];   // hammer down the RIGHT passage (the way through)
+  var PICKPOS=[FC[0]+329, FC[1]];  // dig RIGHT to the 2nd-try win (length ∝ the 1-yr retry gap)
 
   var windowEl=document.querySelector(".window");
   var msg=document.getElementById("msg"), choicesEl=document.getElementById("choices"), tapEl=document.getElementById("tap"),
@@ -227,22 +235,27 @@
   TOOLS.forEach(function(t){ var off=toolOffset(t.kind); var oc=document.createElement("canvas"); oc.width=16; oc.height=16;
     var o=oc.getContext("2d"); o.imageSmoothingEnabled=false; drawTool(o,t.kind,off[0],off[1]); toolImg[t.kind]=oc; });
 
-  var yearsPassed=0, maplerow=document.getElementById("maplerow"), yrtext=document.getElementById("yrtext"), mapleCtx=[];
-  for(var mi=0;mi<10;mi++){ var mc=document.createElement("canvas"); mc.width=16; mc.height=16; mc.className="maple"; maplerow.appendChild(mc); mapleCtx.push(mc.getContext("2d")); }
-  function drawRock(ctx,on){ ctx.clearRect(0,0,16,16);
-    var A=on?"#6b7079":"#cfcbbf", B=on?"#9298a4":"#e0dcd0", D=on?"#474b53":"#b6b2a6";
-    function p(c,x,y,w,h){ ctx.fillStyle=c; ctx.fillRect(x,y,w||1,h||1); }
-    // boulder body
-    p(A,5,3,6,1); p(A,3,4,10,1); p(A,2,5,12,1); p(A,1,6,14,1);
-    p(A,1,7,14,2); p(A,2,9,12,1); p(A,2,10,12,1); p(A,3,11,10,1); p(A,5,12,6,1);
-    // top-left highlight
-    p(B,5,3,4,1); p(B,3,4,4,1); p(B,2,5,3,1); p(B,2,6,2,1);
-    // bottom-right shadow + cracks
-    p(D,9,10,4,1); p(D,5,11,8,1); p(D,5,12,6,1); p(D,12,7,2,2); p(D,7,6,1,3); p(D,8,8,2,1); }
+  var yearsPassed=0, dayEl=document.getElementById("dayval");
+  // days accumulate with distance along the path — mapped to each beat's real-ish date (cf. progress.html)
+  // real calendar days from the actual timeline — OPT 2020-05 = day 0
+  //  OPT 0 · Job +60 · H-1B 1st try (not selected) 2021-10 =518 · H-1B won 2022-10 =883
+  //  PERM passed 2024-03 =1400 · I-140 approved 2025-07 =1887 · wait ~2025-09 =1948
+  //  I-485 submit 2025-10 =1979 · Green Card 2026-10 =2344
+  var PICK_OFF=PICKPOS[0]-FC[0];                 // how far right the slime digs after winning the lottery
+  var DAYPTS=[[nodeDist(1),0],[nodeDist(2),60],
+    [nodeDist(4),518],                           // H-1B 1st try (2021-10) — not selected
+    [nodeDist(4)+PICK_OFF,883],                  // H-1B won on 2nd try (2022-10)
+    [nodeDist(7),1400],[nodeDist(9),1887],[nodeDist(11),1948],
+    [nodeDist(13),1979],[nodeDist(14),2344],[nodeDist(16),2344]];
+  function daysAt(d){ if(d<=DAYPTS[0][0]) return DAYPTS[0][1];
+    for(var i=1;i<DAYPTS.length;i++){ if(d<=DAYPTS[i][0]){ var a=DAYPTS[i-1], b=DAYPTS[i];
+      var t=(b[0]-a[0])?(d-a[0])/(b[0]-a[0]):0; return a[1]+(b[1]-a[1])*t; } }
+    return DAYPTS[DAYPTS.length-1][1]; }
+  function fmtElapsed(days){ var m=Math.round(days/30.44), y=Math.floor(m/12), mo=m%12;
+    return "<b>"+y+"</b> year"+(y===1?"":"s")+" <b>"+mo+"</b> month"+(mo===1?"":"s"); }
   function setHUD(){ var pct=Math.max(0,Math.min(10,hp))/10; hpEl.style.width=(pct*100)+"%";
     hpEl.style.background=pct>0.55?"#35c666":pct>0.3?"#e8b53a":"#e23b45"; yrsEl.textContent=Math.round(hp)+" / 10";
-    for(var i=0;i<10;i++) drawRock(mapleCtx[i], i<yearsPassed);
-    yrtext.textContent=yearsPassed+" yrs"; }
+    dayEl.innerHTML=fmtElapsed(daysAt(hero.dist)); }
   function docs(){ pyrEl.textContent=(items.length>=TOTAL_TOOLS)?"COMPLETE":(items.length+" / "+TOTAL_TOOLS+" tools"); }
   function collectTool(k){ items.push(k); setInv(); docs(); if(k==="wings") flying=true; burst(hero.x,hero.y-18,"good"); }
 
@@ -423,7 +436,7 @@
   function frame(ts){ if(!last) last=ts; var dt=Math.min(.05,(ts-last)/1000); last=ts; now=ts;
     if(mode==="walk"){
       if(!paused){ var d=target-hero.dist;
-        if(d>0.6){ hero.dist=Math.min(target,hero.dist+(flying?SPEED*2.6:SPEED)*dt); var p=posAt(hero.dist); hero.x=p.x; hero.y=p.y;
+        if(d>0.6){ hero.dist=Math.min(target,hero.dist+SPEED*dt); var p=posAt(hero.dist); hero.x=p.x; hero.y=p.y;   // constant speed → 勻速 time
           hero.hop=Math.abs(Math.sin(now/(flying?55:95)))*(flying?3:2);
           if(cur===BEATS.length-1 && hero.dist>=nodeDist(EMERGE_NODE)){   // out of the hole → land + hop right of it
             flying=false; var jt=(hero.dist-nodeDist(EMERGE_NODE))/Math.max(1,nodeDist(FLAG_NODE)-nodeDist(EMERGE_NODE));
@@ -437,8 +450,10 @@
       else if(fphase===2){ hero.x=FC[0]; hero.y+=(FC[1]-hero.y)*Math.min(1,dt*5);          // knocked back up (crying)
         if(Math.abs(hero.y-FC[1])<2){ hero.y=FC[1]; fphase=3; ft=0; showForkWait(); updateBtn(); } }
       else if(fphase===3){ /* stop on the "not selected" setback — wait for the player's NEXT tap */ }
-      else if(fphase===4){ hero.y=FC[1]; hero.x+=(PICKPOS[0]-hero.x)*Math.min(1,dt*4); hero.hop=Math.abs(Math.sin(now/95))*2;
-        if(Math.abs(hero.x-PICKPOS[0])<2){ hero.x=PICKPOS[0]; hero.hop=0; forkWin(); } }
+      else if(fphase===4){ hero.y=FC[1]; hero.x=Math.min(PICKPOS[0], hero.x+SPEED*dt);     // dig right at constant speed
+        hero.dist=nodeDist(FORK_NODE)+(hero.x-FC[0]);                                       // counter rolls 518→883 (no jump)
+        hero.hop=Math.abs(Math.sin(now/95))*2;
+        if(hero.x>=PICKPOS[0]-0.5){ hero.x=PICKPOS[0]; hero.hop=0; forkWin(); } }
     }
     camX += ((hero.x-LW/2)-camX)*Math.min(1,dt*6); camX=Math.max(0,Math.min(WORLD_W-LW,camX));
     camY += ((hero.y-LH/2)-camY)*Math.min(1,dt*6); camY=Math.max(0,Math.min(WORLD_H-LH,camY));
