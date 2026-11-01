@@ -432,7 +432,7 @@
   function drawSparks(dt){ for(var i=sparks.length-1;i>=0;i--){ var s=sparks[i]; s.x+=s.vx*dt; s.y+=s.vy*dt; s.vy+=130*dt; s.life-=dt;
     var sx=s.x-camX, sy=s.y-camY; if(s.life>0&&sx>-4&&sx<LW+4) px(s.c,sx,sy,2,2); if(s.life<=0) sparks.splice(i,1); } }
 
-  var last=0, now=0, SPEED=60;   // constant everywhere → 勻速; ~43s of walking end-to-end
+  var last=0, now=0, SPEED=78;   // constant everywhere → 勻速; ~33s of walking end-to-end
   function frame(ts){ if(!last) last=ts; var dt=Math.min(.05,(ts-last)/1000); last=ts; now=ts;
     if(mode==="walk"){
       if(!paused){ var d=target-hero.dist;
