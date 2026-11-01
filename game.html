@@ -15,8 +15,8 @@
     border-radius:16px;padding:9px;
     box-shadow:inset 0 0 0 2px rgba(255,255,255,.45),inset 0 0 0 6px #7a5417,
       inset 0 0 0 8px rgba(255,255,255,.18),0 24px 60px rgba(0,0,0,.55);}
-  .inner{background:#15121f;border-radius:9px;padding:9px;display:flex;flex-direction:column;gap:9px;
-    box-shadow:inset 0 0 0 2px #4a3914,inset 0 2px 10px rgba(0,0,0,.6);}
+  .inner{background:#e7dcbb;border-radius:9px;padding:9px;display:flex;flex-direction:column;gap:9px;
+    box-shadow:inset 0 0 0 2px #b89a52;}
 
   .titlebar{flex:none;height:38px;display:flex;align-items:center;justify-content:space-between;gap:8px;
     background:linear-gradient(#f1e6c6,#d7c396);border:2px solid #7a5417;border-radius:7px;
@@ -30,7 +30,7 @@
   .slot canvas{width:16px;height:16px;image-rendering:pixelated;display:block;margin:1px auto;}
 
   .window{flex:none;position:relative;width:100%;aspect-ratio:4/3;border-radius:7px;overflow:hidden;
-    border:2px solid #7a5417;box-shadow:inset 0 0 0 1px #4a3914,inset 0 1px 0 rgba(255,255,255,.3),0 2px 8px rgba(0,0,0,.4);background:#6fb7ff;}
+    border:2px solid #7a5417;background:#6fb7ff;}
   canvas#c{display:block;width:100%;height:100%;image-rendering:pixelated;}
   #hint{position:absolute;top:7px;left:50%;transform:translateX(-50%);white-space:nowrap;color:#ffe9b0;
     background:rgba(0,0,0,.6);padding:4px 11px;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:1.5px;
@@ -51,7 +51,8 @@
   .cbtn:active{transform:translateY(2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 1px 0 #7a5417;}
   .cbtn small{display:block;font-weight:600;font-size:10px;color:#6a4a1e;margin-top:2px;letter-spacing:0;}
   #tap{position:absolute;right:12px;bottom:10px;font-size:12px;font-weight:800;color:#fff;background:#9a3d14;
-    padding:8px 15px;border-radius:7px;letter-spacing:.5px;box-shadow:0 3px 0 #5e240b;text-align:center;}
+    padding:8px 15px;border-radius:7px;letter-spacing:.5px;box-shadow:0 3px 0 #5e240b;text-align:center;white-space:nowrap;}
+  .bic{display:inline-block;width:9px;height:10px;fill:#fff;vertical-align:-1px;}
   .pabtn{position:absolute;right:12px;bottom:10px;z-index:3;font-size:12px;font-weight:800;color:#fff;background:#9a3d14;
     padding:8px 15px;border-radius:7px;letter-spacing:.5px;box-shadow:0 3px 0 #5e240b;border:none;cursor:pointer;font-family:inherit;}
   .pabtn:active{transform:translateY(2px);box-shadow:0 1px 0 #5e240b;}
@@ -71,13 +72,13 @@
   .statbar{flex:none;height:34px;display:flex;align-items:center;gap:9px;
     background:linear-gradient(#f1e6c6,#d7c396);border:2px solid #7a5417;border-radius:7px;padding:0 12px;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.6);}
-  .slabel{font-weight:800;font-size:11px;letter-spacing:1px;color:#5a2e0c;text-transform:uppercase;white-space:nowrap;min-width:54px;}
+  .slabel{font-weight:800;font-size:11px;letter-spacing:1px;color:#5a2e0c;text-transform:uppercase;white-space:nowrap;min-width:56px;}
   .maplerow{flex:1;min-width:0;display:flex;justify-content:space-between;align-items:center;overflow:hidden;}
   .maple{width:18px;height:18px;image-rendering:pixelated;display:block;flex:none;}
   .track{flex:1;height:13px;background:#8a7636;border:2px solid #5a4410;border-radius:3px;overflow:hidden;
     box-shadow:inset 0 2px 3px rgba(0,0,0,.4);}
-  .track>i{display:block;height:100%;width:20%;background:#35c666;transition:width .5s steps(8),background .3s;}
-  .hyrs{font-size:11px;font-weight:800;color:#2a2212;min-width:48px;text-align:right;letter-spacing:.3px;white-space:nowrap;}
+  .track>i{display:block;height:100%;width:20%;background:#35c666;transition:background .3s;}
+  .hyrs{font-size:11px;font-weight:800;color:#2a2212;min-width:56px;text-align:right;letter-spacing:.3px;white-space:nowrap;}
 
   #win{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:11px;
     background:rgba(8,8,20,.9);color:#fff;text-align:center;z-index:5;border-radius:16px;padding:24px;}
@@ -115,7 +116,7 @@
         <span class="hyrs" id="yrtext">0 yrs</span>
       </div>
       <div class="statbar">
-        <span class="slabel">Stamina</span>
+        <span class="slabel">HP</span>
         <div class="track"><i id="hp"></i></div>
         <span class="hyrs" id="yrs">10 / 10</span>
       </div>
@@ -154,12 +155,12 @@
     {node:6,  year:2022, dip:1, type:"fork", tool:"coin", tag:"H-1B lottery",
       msg:"<b>H-1B lottery</b> — the shaft forks, and only ~27% get picked. You take your chances…",
       bomb:"<b>2021 — not selected!</b> That tunnel caves in. Your clock keeps ticking — wait a year and try again.",
-      winmsg:"<b>2022 — H-1B!</b> Picked on your 2nd try — a gold coin, and <b>6 years</b> of stamina to work toward the green card. But every year that passes burns one."},
+      winmsg:"<b>2022 — H-1B!</b> Picked on your 2nd try — a gold coin, and <b>6 HP</b> (6 years) to work toward the green card. But every year that passes burns one."},
     {node:9,  year:2023, tool:"gemB", tag:"PERM", msg:"<b>PERM</b> — a blue gem! You pass your <b>PERM</b> labor certification — the first green-card step. That sets your <b>priority date</b>, your spot in the green-card line."},
     {node:11, year:2024, tool:"gemG", tag:"I-140", msg:"<b>I-140</b> — a green gem! Your employer's green-card petition for you is approved."},
-    {node:13, year:2025, type:"wait", tag:"The long wait", msg:"The big wait: your <b>priority date</b> must become <b>current</b> (Chart A) before you can file. The years — and your stamina — tick down…"},
+    {node:13, year:2025, type:"wait", tag:"The long wait", msg:"The big wait: your <b>priority date</b> must become <b>current</b> (Chart A) before you can file. The years — and your HP — tick down…"},
     {node:15, year:2026, tool:"wings", tag:"I-485 / EAD", msg:"Current! You file <b>I-485</b> and get your <b>EAD + Advance Parole</b> — <b>wings!</b> Advance Parole lets you travel freely. Fly up for your green card!"},
-    {node:16, year:2026, cap:10, tool:"greencard", tag:"Approved!", msg:"<b>I-485 APPROVED</b> — you fly up and grab your <b>Green Card</b> at the surface! Stamina maxed to 10 — you can stay for good."},
+    {node:16, year:2026, cap:10, tool:"greencard", tag:"Approved!", msg:"<b>I-485 APPROVED</b> — you fly up and grab your <b>Green Card</b> at the surface! HP maxed to 10 — you can stay for good."},
     {node:18, year:2026, type:"flag", tag:"Victory", msg:"You climb into daylight a <b>lawful permanent resident</b>."}
   ];
   var FORK_INDEX=2, FORK_NODE=6;
@@ -257,11 +258,13 @@
   function doNext(){ if(cur>=BEATS.length-1){ showEnd(); return; }
     cur++; target=nodeDist(BEATS[cur].node); mode="walk"; paused=false; updateBtn(); }
   function showEnd(){ mode="ending"; tapEl.style.display="none"; if(windowEl.querySelector(".pabtn")) return;
-    var pa=document.createElement("button"); pa.className="pabtn"; pa.innerHTML="▶ PLAY AGAIN";
+    var pa=document.createElement("button"); pa.className="pabtn"; pa.innerHTML=SVG_PLAY+" PLAY AGAIN";
     pa.onclick=function(){ location.reload(); }; windowEl.appendChild(pa); }
+  var SVG_PAUSE='<svg class="bic" viewBox="0 0 10 11"><rect x="0" y="0" width="3.4" height="11"/><rect x="6.6" y="0" width="3.4" height="11"/></svg>';
+  var SVG_PLAY='<svg class="bic" viewBox="0 0 10 11"><path d="M0 0 L10 5.5 L0 11 Z"/></svg>';
   function updateBtn(){
-    if(mode==="wait" || (mode==="fork"&&fphase===3)){ tapEl.textContent="NEXT ▶"; tapEl.style.display="block"; }
-    else if(mode==="walk"||mode==="fork"){ tapEl.textContent=paused?"▶ GO":"⏸ PAUSE"; tapEl.style.display="block"; }
+    if(mode==="wait" || (mode==="fork"&&fphase===3)){ tapEl.innerHTML="NEXT "+SVG_PLAY; tapEl.style.display="block"; }
+    else if(mode==="walk"||mode==="fork"){ tapEl.innerHTML = paused ? (SVG_PLAY+" GO") : (SVG_PAUSE+" PAUSE"); tapEl.style.display="block"; }
     else tapEl.style.display="none"; }
 
   // fork — auto-played: dig DOWN → bomb → back UP → go RIGHT
